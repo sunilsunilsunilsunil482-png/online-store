@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>VÉLORA — Admin Panel</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+
+        .admin {
+            max-width: 1100px;
+            margin: auto;
+            padding: 50px 20px;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 35px;
+        }
+
+        .admin-header a {
+            text-decoration: none;
+            color: white;
+            background: #111;
+            padding: 12px 18px;
+            border-radius: 8px;
+        }
+
+        .admin-form {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid #eee;
+            box-shadow: 0 10px 30px rgba(0,0,0,.06);
+        }
+
+        .admin-form h2 {
+            margin-bottom: 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group input {
+            padding: 13px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+            font-size: 15px;
+        }
+
+        .save-btn {
+            margin-top: 20px;
+            width: 100%;
+            padding: 15px;
+            background: #111;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .admin-products {
+            margin-top: 45px;
+        }
+
+        .admin-product {
+            background: white;
+            padding: 15px;
+            margin-top: 12px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border: 1px solid #eee;
+        }
+
+        .admin-product img {
+            width: 75px;
+            height: 75px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .admin-info {
+            flex: 1;
+        }
+
+        .admin-info h3 {
+            margin-bottom: 5px;
+        }
+
+        .admin-info p {
+            color: #777;
+        }
+
+        .delete-btn {
+            padding: 9px 14px;
+            border: none;
+            background: #eee;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        @media(max-width:600px) {
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+                grid-column: auto;
+            }
+
+            .admin-product {
+                align-items: flex-start;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="admin">
+
+    <div class="admin-header">
+
+        <div>
+            <div class="logo">
+                VÉLORA<span>.</span>
+            </div>
+
+            <p>Admin Product Manager</p>
+        </div>
+
+        <a href="index.html">
+            ← Store
+        </a>
+
+    </div>
+
+
+    <!-- ADD PRODUCT -->
+
+    <div class="admin-form">
+
+        <h2>➕ Add New Product</h2>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label>Product Name</label>
+
+                <input
+                    type="text"
+                    id="productName"
+                    placeholder="Example: Premium Watch"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Category</label>
+
+                <input
+                    type="text"
+                    id="productCategory"
+                    placeholder="Example: Accessories"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Price (₹)</label>
+
+                <input
+                    type="number"
+                    id="productPrice"
+                    placeholder="2499"
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>Product Image URL</label>
+
+                <input
+                    type="text"
+                    id="productImage"
+                    placeholder="https://..."
+                >
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="save-btn"
+            onclick="addProduct()"
+        >
+            Save Product
+        </button>
+
+    </div>
+
+
+    <!-- PRODUCT LIST -->
+
+    <div class="admin-products">
+
+        <h2>📦 Your Products</h2>
+
+        <div id="adminProducts"></div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const defaultProducts = [
+
+    {
+        id: 1,
+        name: "Premium Watch",
+        category: "Accessories",
+        price: 2499,
+        image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=800&q=80"
+    },
+
+    {
+        id: 2,
+        name: "Classic Sneakers",
+        category: "Fashion",
+        price: 1999,
+        image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=800&q=80"
+    },
+
+    {
+        id: 3,
+        name: "Leather Bag",
+        category: "Fashion",
+        price: 2999,
+        image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=800&q=80"
+    },
+
+    {
+        id: 4,
+        name: "Wireless Headphones",
+        category: "Electronics",
+        price: 3499,
+        image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=800&q=80"
+    }
+
+];
+
+
+let products =
+    JSON.parse(localStorage.getItem("veloraProducts"))
+    || defaultProducts;
+
+
+/* SAVE */
+
+function saveProducts() {
+
+    localStorage.setItem(
+        "veloraProducts",
+        JSON.stringify(products)
+    );
+
+}
+
+
+/* ADD */
+
+function addProduct() {
+
+    const name =
+        document.getElementById("productName").value.trim();
+
+    const category =
+        document.getElementById("productCategory").value.trim();
+
+    const price =
+        Number(document.getElementById("productPrice").value);
+
+    const image =
+        document.getElementById("productImage").value.trim();
+
+
+    if (!name || !category || !price || !image) {
+
+        alert("Please fill all fields.");
+
+        return;
+
+    }
+
+
+    const product = {
+
+        id: Date.now(),
+
+        name: name,
+
+        category: category,
+
+        price: price,
+
+        image: image
+
+    };
+
+
+    products.push(product);
+
+    saveProducts();
+
+    displayProducts();
+
+
+    document.getElementById("productName").value = "";
+
+    document.getElementById("productCategory").value = "";
+
+    document.getElementById("productPrice").value = "";
+
+    document.getElementById("productImage").value = "";
+
+
+    alert("Product added successfully! ✅");
+
+}
+
+
+/* DISPLAY */
+
+function displayProducts() {
+
+    const container =
+        document.getElementById("adminProducts");
+
+    container.innerHTML = "";
+
+
+    products.forEach(product => {
+
+        container.innerHTML += `
+
+            <div class="admin-product">
+
+                <img
+                    src="${product.image}"
+                    alt="${product.name}"
+                >
+
+                <div class="admin-info">
+
+                    <h3>${product.name}</h3>
+
+                    <p>${product.category}</p>
+
+                    <strong>
+                        ₹${product.price.toLocaleString("en-IN")}
+                    </strong>
+
+                </div>
+
+                <button
+                    class="delete-btn"
+                    onclick="deleteProduct(${product.id})"
+                >
+                    🗑️ Delete
+                </button>
+
+            </div>
+
+        `;
+
+    });
+
+}
+
+
+/* DELETE */
+
+function deleteProduct(id) {
+
+    const confirmDelete =
+        confirm("Delete this product?");
+
+
+    if (!confirmDelete) return;
+
+
+    products =
+        products.filter(product =>
+            product.id !== id
+        );
+
+
+    saveProducts();
+
+    displayProducts();
+
+}
+
+
+displayProducts();
+
+</script>
+
+</body>
+      </html>
